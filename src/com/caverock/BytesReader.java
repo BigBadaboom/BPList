@@ -1,4 +1,4 @@
-package app.veq;
+package com.caverock;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -207,7 +207,7 @@ public class BytesReader
         long result = buf[pos++] & 0xff;
         result |= (buf[pos++] & 0xff) << 8;
         result |= (buf[pos++] & 0xff) << 16;
-        return result | ((buf[pos++] & 0xff) << 24);
+        return result | (((long) (buf[pos++] & 0xff)) << 24);
     }
 
 
@@ -226,7 +226,7 @@ public class BytesReader
     {
         if (remaining() < 4)
             throw new ArrayIndexOutOfBoundsException("Not enough bytes left to read an int");
-        long result = (buf[pos++] & 0xff) << 24;
+        long result = ((long) (buf[pos++] & 0xff)) << 24;
         result |= (buf[pos++] & 0xff) << 16;
         result |= (buf[pos++] & 0xff) << 8;
         return result | (buf[pos++] & 0xff);
@@ -240,7 +240,7 @@ public class BytesReader
     {
         if (remaining() < 8)
             throw new ArrayIndexOutOfBoundsException("Not enough bytes left to read a long");
-        long result = (long) (buf[pos++] & 0xff);
+        long result = (buf[pos++] & 0xff);
         result |= ((long) (buf[pos++] & 0xff)) << 8;
         result |= ((long) (buf[pos++] & 0xff)) << 16;
         result |= ((long) (buf[pos++] & 0xff)) << 24;

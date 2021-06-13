@@ -1,9 +1,8 @@
-package app.veq;
+package com.caverock;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
 import java.io.File;
-import java.io.IOException;
 import java.io.StringWriter;
 import java.io.Writer;
 import java.math.BigInteger;
@@ -24,7 +23,6 @@ public class BPList
 {
     private static final int     HEADER_SIZE = 8;
     private static final int     FOOTER_SIZE = 16;
-    private static final String  ROOT_KEY_NAME = "Root";
 
     // Apple date epoch.  Worked out using the following code:
     //Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("GMT"));
@@ -43,8 +41,7 @@ public class BPList
 
     public static Result<Map<String, Object>>  decode(File file)
     {
-        HashMap<String, Object>  result = new HashMap<>();
-        byte[]                   fileBuf;
+        HashMap<String, Object>  result;
 
         if (!file.canRead())
             return fileNotFound(file.getPath());
@@ -150,7 +147,7 @@ public class BPList
 
     public static void  toJson(Writer writer, Map<String,Object> plist)
     {
-        Map<String, Boolean> config = new HashMap<String, Boolean>();
+        Map<String, Boolean> config = new HashMap<>();
         config.put(JsonGenerator.PRETTY_PRINTING, true);
         JsonWriterFactory writerFactory = Json.createWriterFactory(config);
         JsonWriter jsonWriter = writerFactory.createWriter(writer);
@@ -183,7 +180,7 @@ public class BPList
 
 
 
-    private static void readOffsetTableEntries(long[] offsetTable, BytesReader in, int offsetTableByteCount) throws IOException
+    private static void readOffsetTableEntries(long[] offsetTable, BytesReader in, int offsetTableByteCount)
     {
         for (int i = 0; i < offsetTable.length; i++) {
             offsetTable[i] = readNByteNumber(in, offsetTableByteCount);
@@ -193,7 +190,7 @@ public class BPList
 
     // Read a offset or object table value of size 1..N bytes
     // We have already checked that N <= 8.
-    private static long readNByteNumber(BytesReader in, int byteCount) throws IOException
+    private static long readNByteNumber(BytesReader in, int byteCount)
     {
         return switch (byteCount)
         {
@@ -209,7 +206,7 @@ public class BPList
     private static Object  getObject(BytesReader in,
                                      long[] offsetTable,
                                      int objectIndex,
-                                     int objectRefByteCount) throws IOException
+                                     int objectRefByteCount)
     {
         in.seek(offsetTable[objectIndex]);
         int marker = in.readByte() & 0xff;
@@ -286,7 +283,7 @@ public class BPList
     }
 
 
-    private static int  extendedCount(BytesReader in) throws IOException
+    private static int  extendedCount(BytesReader in)
     {
         int next = in.readUnsignedByte();
         int pow = next & 0xf;
@@ -296,7 +293,7 @@ public class BPList
     }
 
 
-    private static Object[]  parseArray(BytesReader in, int count, long[] offsetTable, int objectRefByteCount) throws IOException
+    private static Object[]  parseArray(BytesReader in, int count, long[] offsetTable, int objectRefByteCount)
     {
         Object[]  array = new Object[count];
         for (int i = 0; i < count; i++) {
@@ -309,7 +306,7 @@ public class BPList
     }
 
 
-    private static HashMap<String, Object>  parseDict(BytesReader in, int count, long[] offsetTable, int objectRefByteCount) throws IOException
+    private static HashMap<String, Object>  parseDict(BytesReader in, int count, long[] offsetTable, int objectRefByteCount)
     {
         HashMap<String, Object>  dict = new HashMap<>(count);
         // Read the key and value object numbers

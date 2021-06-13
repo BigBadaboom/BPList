@@ -1,10 +1,10 @@
-package app.veq;
+package com.caverock;
 
 public class Result<T>
 {
-    private boolean  isSuccess;     // successful result?
-    private String   message;  // failure error message
-    private T        value;         // result value if successful
+    private boolean  isSuccess;  // successful result?
+    private String   message;    // failure error message
+    private T        value;      // result value if successful
 
 
     // Disable empty constructor
@@ -40,7 +40,7 @@ public class Result<T>
     {
         if (isSuccess)
             throw new IllegalArgumentException("isSuccess must be false");
-        this.isSuccess = isSuccess;
+        this.isSuccess = isSuccess;  // always false
         this.value = null;
         this.message = errorMessage;
     }
