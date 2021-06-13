@@ -16,7 +16,7 @@ public class Main {
         //String  testfile = "C:\\Users\\Paul\\DevelopmentWorkspaces\\IdeaProjects\\BPList\\TestFiles\\iTunes-small.bplist";
         String  testfile = "C:\\Users\\Paul\\DevelopmentWorkspaces\\IdeaProjects\\BPList\\TestFiles\\Procreate_Pop_Document.archive";
 
-        Result<Map<String,Object>> result = BPList.decode(testfile);
+        Result<Dict> result = BPList.decode(testfile);
         if (!result.isSuccess())
         {
             System.err.println(result.getMessage());

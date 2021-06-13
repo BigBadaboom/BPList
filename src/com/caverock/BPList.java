@@ -31,7 +31,7 @@ public class BPList
     //cal.getTimeInMillis();
     private static final long  APPLE_DATE_EPOCH = 978307200000L;
 
-    public static Result<Map<String, Object>>  decode(String filename)
+    public static Result<Dict>  decode(String filename)
     {
         File file = new File(filename);
 
@@ -39,9 +39,9 @@ public class BPList
     }
 
 
-    public static Result<Map<String, Object>>  decode(File file)
+    public static Result<Dict>  decode(File file)
     {
-        HashMap<String, Object>  result;
+        Dict  result;
 
         if (!file.canRead())
             return fileNotFound(file.getPath());
@@ -111,8 +111,8 @@ public class BPList
             if (!(obj instanceof Map))
                 return error("Root object was not a dictionary! We don't know how to decode these! Use this file to update code!");
 
-            //result.put(ROOT_KEY_NAME, (Map<String, Object>) obj);
-            result = (HashMap<String, Object>) obj;
+            //result.put(ROOT_KEY_NAME, (Dict) obj);
+            result = (Dict) obj;
 
 
             //System.out.println("result: " + new JSONObject(result));
@@ -131,13 +131,13 @@ public class BPList
     // JSON output
 
 
-    public static JsonObject  toJson(Map<String,Object> plist)
+    public static JsonObject  toJson(Dict plist)
     {
         return jsonToMap(plist);
     }
 
 
-    public static String  toJsonString(Map<String,Object> plist)
+    public static String  toJsonString(Dict plist)
     {
         StringWriter stringWriter = new StringWriter();
         toJson(stringWriter, plist);
@@ -145,7 +145,7 @@ public class BPList
     }
 
 
-    public static void  toJson(Writer writer, Map<String,Object> plist)
+    public static void  toJson(Writer writer, Dict plist)
     {
         Map<String, Boolean> config = new HashMap<>();
         config.put(JsonGenerator.PRETTY_PRINTING, true);
@@ -161,19 +161,19 @@ public class BPList
 
 
 
-    private static Result<Map<String, Object>>  fileNotFound(String filename)
+    private static Result<Dict>  fileNotFound(String filename)
     {
         return new Result<>("Cannot read file \"" + filename + "\"");
     }
 
 
-    private static Result<Map<String, Object>>  invalidFile(String msg)
+    private static Result<Dict>  invalidFile(String msg)
     {
         return new Result<>((msg != null) ? "Invalid bplist file: " + msg : "Invalid bplist file");
     }
 
 
-    private static Result<Map<String, Object>>  error(String msg)
+    private static Result<Dict>  error(String msg)
     {
         return new Result<>(msg);
     }
@@ -306,9 +306,9 @@ public class BPList
     }
 
 
-    private static HashMap<String, Object>  parseDict(BytesReader in, int count, long[] offsetTable, int objectRefByteCount)
+    private static Dict  parseDict(BytesReader in, int count, long[] offsetTable, int objectRefByteCount)
     {
-        HashMap<String, Object>  dict = new HashMap<>(count);
+        Dict  dict = new Dict(count);
         // Read the key and value object numbers
         int  keyRefsStart = in.position();
         // How big the block of kRefs (and also the block of vRefs) is
@@ -336,7 +336,7 @@ public class BPList
 
 
 
-    private static JsonObject  jsonToMap(Map<String,Object> dict)
+    private static JsonObject  jsonToMap(Dict dict)
     {
         JsonObjectBuilder  builder = Json.createObjectBuilder();
         for (Map.Entry<String,Object> entry: dict.entrySet())
@@ -358,7 +358,7 @@ public class BPList
             case "Double" -> builder.add(key, (Double) val);
             case "String" -> builder.add(key, (String) val);
             case "Object[]" -> builder.add(key, jsonToArray((Object[]) val));
-            case "HashMap" -> builder.add(key, jsonToMap((Map<String, Object>) val));
+            case "HashMap" -> builder.add(key, jsonToMap((Dict) val));
             case "int[]" -> builder.add(key, jsonToArray((int[]) val));
             case "BigInteger" -> builder.add(key, (BigInteger) val);
             // For JSON, we'll just return a date string in the ISO 8601 format
@@ -400,7 +400,7 @@ public class BPList
             case "Double" -> builder.add((Double) val);
             case "String" -> builder.add((String) val);
             case "Object[]" -> builder.add(jsonToArray((Object[]) val));
-            case "HashMap" -> builder.add(jsonToMap((Map<String, Object>) val));
+            case "HashMap" -> builder.add(jsonToMap((Dict) val));
             case "int[]" -> builder.add(jsonToArray((int[]) val));
             case "BigInteger" -> builder.add((BigInteger) val);
             // For JSON, we'll just return a date string in the ISO 8601 format
