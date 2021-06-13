@@ -1,0 +1,21 @@
+plugins {
+    id 'java'
+}
+
+group 'app.veq'
+version '1.0-SNAPSHOT'
+
+repositories {
+    mavenCentral()
+}
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src']
+        }
+    }
+}
+dependencies {
+    implementation 'org.glassfish:javax.json:1.1.4'
+    //implementation 'javax.json:javax.json-api:1.1.4'
+}
