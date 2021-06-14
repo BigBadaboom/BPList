@@ -2,9 +2,7 @@ package com.caverock;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;
-import java.io.File;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.math.BigInteger;
 import java.nio.file.Files;
 import java.time.Instant;
@@ -33,16 +31,12 @@ public class BPList
 
     public static Result<Dict>  decode(String filename)
     {
-        File file = new File(filename);
-
-        return decode(file);
+        return decode(new File(filename));
     }
 
 
     public static Result<Dict>  decode(File file)
     {
-        Dict  result;
-
         if (!file.canRead())
             return fileNotFound(file.getPath());
         else if (file.length() < (HEADER_SIZE + FOOTER_SIZE + 1))
@@ -50,8 +44,35 @@ public class BPList
         else if (file.length() > Integer.MAX_VALUE)
             return invalidFile("File is too big to read into memory buffer");  // needs to fit in a byte array
 
+        try
+        {
+            return decode( new BytesReader(Files.readAllBytes(file.toPath())) );
+        }
+        catch (IOException e)
+        {
+            return error("Error reading file: " + e.getMessage());
+        }
+    }
+
+
+    public static Result<Dict>  decode(InputStream stream)
+    {
+        try (BufferedInputStream  bis = new BufferedInputStream(stream))
+        {
+            return decode( new BytesReader(stream.readAllBytes()) );
+        }
+        catch (IOException e)
+        {
+            return error("Error reading file: " + e.getMessage());
+        }
+    }
+
+
+    private static Result<Dict>  decode(BytesReader  in)
+    {
+        Dict  result;
+
         try {
-            BytesReader  in = new BytesReader(Files.readAllBytes(file.toPath()));
 
             // Check the header
             // Check the special identifier string "bplist"
