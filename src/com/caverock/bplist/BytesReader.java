@@ -1,4 +1,4 @@
-package com.caverock;
+package com.caverock.bplist;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;

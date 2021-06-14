@@ -1,4 +1,4 @@
-package com.caverock;
+package com.caverock.bplist;
 
 import javax.json.*;
 import javax.json.stream.JsonGenerator;

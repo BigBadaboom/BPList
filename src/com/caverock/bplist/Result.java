@@ -1,4 +1,4 @@
-package com.caverock;
+package com.caverock.bplist;
 
 public class Result<T>
 {

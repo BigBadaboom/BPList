@@ -1,4 +1,4 @@
-package com.caverock;
+package com.caverock.bplist;
 
 import java.util.HashMap;
 
