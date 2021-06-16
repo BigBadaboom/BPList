@@ -282,7 +282,7 @@ public class BPList
                 return in.readUTF16StringBE(count);
 
             case 8:  // uid
-                return readNByteNumber(in, count + 1);
+                return new Uid(readNByteNumber(in, count + 1));
 
             case 10:  // array
             case 12:  // set
@@ -379,12 +379,13 @@ public class BPList
             case "Double" -> builder.add(key, (Double) val);
             case "String" -> builder.add(key, (String) val);
             case "Object[]" -> builder.add(key, jsonToArray((Object[]) val));
-            case "HashMap" -> builder.add(key, jsonToMap((Dict) val));
+            case "Dict" -> builder.add(key, jsonToMap((Dict) val));
             case "int[]" -> builder.add(key, jsonToArray((int[]) val));
             case "BigInteger" -> builder.add(key, (BigInteger) val);
             // For JSON, we'll just return a date string in the ISO 8601 format
             case "Instant" -> builder.add(key, ZonedDateTime.ofInstant((Instant) val, ZoneId.of("GMT"))
                                                             .format(DateTimeFormatter.ISO_INSTANT));
+            case "Uid" -> builder.add(key, ((Uid) val).getUid());
             //default -> System.err.println("NYI: " + val.getClass().getSimpleName());
         }
     }
@@ -421,13 +422,14 @@ public class BPList
             case "Double" -> builder.add((Double) val);
             case "String" -> builder.add((String) val);
             case "Object[]" -> builder.add(jsonToArray((Object[]) val));
-            case "HashMap" -> builder.add(jsonToMap((Dict) val));
+            case "Dict" -> builder.add(jsonToMap((Dict) val));
             case "int[]" -> builder.add(jsonToArray((int[]) val));
             case "BigInteger" -> builder.add((BigInteger) val);
             // For JSON, we'll just return a date string in the ISO 8601 format
             case "Instant" -> builder.add(ZonedDateTime.ofInstant((Instant) val, ZoneId.of("GMT"))
                                                        .format(DateTimeFormatter.ISO_INSTANT));
-            //default -> System.err.println("NYI: " + val.getClass().getSimpleName());
+            case "Uid" -> builder.add(((Uid) val).getUid());
+            default -> System.err.println("NYI: " + val.getClass().getSimpleName());
         }
     }
 
